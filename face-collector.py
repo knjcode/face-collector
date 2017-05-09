@@ -236,8 +236,13 @@ def save_face(face_img, output, resize, prefix, zerofill, imgcat):
     number_padded = str(face_index).zfill(zerofill)
     filename = prefix + number_padded + ".png"
     filepath = os.path.join(output, filename)
-    cv2.imwrite(filepath, face_img)
-    print("Saved:", filepath)
+
+    if cv2.imwrite(filepath, face_img):
+        print("Saved:", filepath)
+    else:
+        print("Error: Failed to save", filepath)
+        sys.exit(1)
+
     face_index = face_index + 1
 
     if imgcat:
