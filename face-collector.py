@@ -20,6 +20,7 @@ stdout = getattr(sys.stdout, 'buffer', sys.stdout)
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor('./shape_predictor_68_face_landmarks.dat')
 
+cnn_face_detector = dlib.cnn_face_detection_model_v1('./mmod_human_face_detector.dat')
 
 def triangle_center(p1, p2, p3):
     x = (p1[0] + p2[0] + p3[0]) / 3
@@ -144,7 +145,8 @@ def collect_faces_from_video(filename, output, confidence, resize, prefix, zerof
             else:
                 dframe = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-            dets, scores, _idx = detector.run(dframe, 1)
+            # dets, scores, _idx = detector.run(dframe, 1)
+            dets, scores, _idx = cnn_face_detector(dframe, 1)
 
             for (face, score) in zip(dets, scores):
                 if (score > confidence):
@@ -170,7 +172,8 @@ def collect_faces_from_image(filename, output, confidence, resize, prefix, zerof
         frame = img
     height, width = frame.shape[:2]
 
-    dets, scores, _idx = detector.run(img, 1)
+    # dets, scores, _idx = detector.run(img, 1)
+    dets, scores, _idx = cnn_face_detector(img, 1)
 
     for (face, score) in zip(dets, scores):
         if (score > confidence):
